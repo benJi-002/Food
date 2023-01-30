@@ -1,6 +1,7 @@
 const gulp = require("gulp");
 const webpack = require("webpack-stream");
 const sass = require('gulp-sass')(require('sass'));
+const rename = require("gulp-rename");
 const autoprefixer = require("autoprefixer");
 const cleanCSS = require("gulp-clean-css");
 const postcss = require("gulp-postcss");
@@ -15,7 +16,7 @@ gulp.task("copy-html", () => {
 });
 
 gulp.task("build-js", () => {
-    return gulp.src("./src/js/main.js")
+    return gulp.src("./src/js/script.js")
                 .pipe(webpack({
                     mode: 'development',
                     output: {
@@ -48,9 +49,20 @@ gulp.task("build-js", () => {
 
 gulp.task("build-sass", () => {
     return gulp.src("./src/scss/**/*.scss")
-                .pipe(sass().on('error', sass.logError))
+                .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+                .pipe(rename({suffix: '.min', prefix: ''}))
+                // .pipe(autoprefixer())
+                .pipe(cleanCSS({compatibility: 'ie8'}))
                 .pipe(gulp.dest(dist + '/css'))
                 .pipe(browsersync.stream());
+
+                // return gulp.src("./src/scss/**/*.scss")
+                // .pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+                // .pipe(rename({suffix: '.min', prefix: ''}))
+                // .pipe(autoprefixer())
+                // .pipe(cleanCSS({compatibility: 'ie8'}))
+                // .pipe(gulp.dest(dist + '/css'))
+                // .pipe(browsersync.stream());
 });
 
 gulp.task("copy-assets", () => {
