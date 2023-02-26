@@ -105,8 +105,7 @@ window.addEventListener('DOMContentLoaded', () => {
     /* Модальное окно */
 
     const modalTrigger = document.querySelectorAll('[data-modal]'),
-          modal = document.querySelector('.modal'),
-          modalCloseBtn = document.querySelector('[data-close]');
+          modal = document.querySelector('.modal');
 
     function openModal() {
         modal.classList.add('show', 'fade');
@@ -125,10 +124,8 @@ window.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = '';
     }
 
-    modalCloseBtn.addEventListener('click', closeModal);
-
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+        if (e.target === modal || e.target.getAttribute('data-close') == '') {
             closeModal();
         }
     });
@@ -139,7 +136,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // const modalTimerId = setTimeout(openModal, 5000);
+    const modalTimerId = setTimeout(openModal, 50000);
 
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
@@ -228,7 +225,7 @@ window.addEventListener('DOMContentLoaded', () => {
     const forms = document.querySelectorAll('form');
 
     const message = {
-        loading: 'Загрузка',
+        loading: 'img/form/spinnre.svg',
         success: 'Спасибо! Скоро мы с Вами свяжемся',
         failure: 'Что-то пошло не так...'
     };
@@ -241,41 +238,97 @@ window.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
 
-            const statusMessage = document.createElement('div');
-            statusMessage.classList.add('status');
-            statusMessage.textContent = message.loading;
-            form.append(statusMessage);
+            const statusMessage = document.createElement('img');
+            statusMessage.src = message.loading;
+            statusMessage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+            `;
+            form.insertAdjacentElement('afterend', statusMessage);
 
-            const req = new XMLHttpRequest();
-            req.open('POST', 'server.php');
+
+            // реализация POST при помощи XMLHttpRequest
+            // const req = new XMLHttpRequest();
+            // req.open('POST', 'server.php');
 
             // При связке XMLHttpRequest + объект + FormData заголовок устанавливать не нужно !!!
-            req.setRequestHeader('Content-type', 'application/json');
+            // req.setRequestHeader('Content-type', 'application/json');
 
             const formData = new FormData(form);
 
+            // реализация POST при помощи XMLHttpRequest (для этого метода это тоже нужно)
             const object = {};
             formData.forEach(function(value, key) {
                 object[key] = value;
             });
 
-            const json = JSON.stringify(object);
+            // const json = JSON.stringify(object);
 
-            req.send(json);
+            // реализация POST при помощи XMLHttpRequest
+            // req.send(json);
 
-            req.addEventListener('load', () => {
-                if (req.status === 200) {
-                    console.log(req.response);
-                    statusMessage.textContent = message.success;
-                    form.reset(); //сброс формы
-                    setTimeout(() => {
-                        statusMessage.remove();
-                    }, 3000);
-                } else {
-                    statusMessage.textContent = message.failure;
-                }
+            // реализация POST при помощи fetch
+            fetch('server.php', {
+                method: 'POST',
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            })
+            .then(data => data.text())
+            .then(data => {
+                console.log(data);
+                showThanksModal(message.success);
+                statusMessage.remove();
+            })
+            .catch(() => {
+                showThanksModal(message.failure);
+            })
+            .finally(() => {
+                form.reset(); //сброс формы
             });
+            
+            // реализация POST при помощи XMLHttpRequest
+            // req.addEventListener('load', () => {
+                
+            //     if (req.status === 200) {
+            //         console.log(req.response);
+            //         showThanksModal(message.success);
+            //         form.reset(); //сброс формы
+            //         statusMessage.remove();
+            //     } else {
+            //         showThanksModal(message.failure);
+            //     }
+            // });
         });
     }
     
+    function showThanksModal(message) {
+        const prevModalDialog = document.querySelector('.modal__dialog');
+
+        prevModalDialog.classList.add('hide');
+        openModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div class="modal__close" data-close>&times;</div>
+                <div class="modal__title">${message}</div>
+            </div>
+        `;
+
+        document.querySelector('.modal').append(thanksModal);
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();
+        }, 4000);
+    }
+
+    // fetch('http://localhost:3000/menu')
+    //     .then(data => data.json())
+    //     .then(res => console.log(res));
+
 });
