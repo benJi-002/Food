@@ -208,6 +208,17 @@ window.addEventListener('DOMContentLoaded', () => {
             });
         });
 
+    // Формирование карточек при помощи сторонней библиотеки axios
+
+    // axios.get('http://localhost:3000/menu')
+    //     .then(data => {
+    //         data.data.forEach(({img, altimg, title, descr, price}) => {
+    //             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+    //         });
+    //     }); 
+
+    // Формирование карточек без использования шаблонизации 
+
     // getResources('http://localhost:3000/menu')
     //     .then(data => createCard(data));
 
@@ -236,7 +247,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //     });
     // }
 
-    // Формы
+    /* Формы */
 
     const forms = document.querySelectorAll('form');
 

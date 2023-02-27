@@ -3033,7 +3033,15 @@ window.addEventListener('DOMContentLoaded', () => {
     }) => {
       new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
     });
-  }); // getResources('http://localhost:3000/menu')
+  }); // Формирование карточек при помощи сторонней библиотеки axios
+  // axios.get('http://localhost:3000/menu')
+  //     .then(data => {
+  //         data.data.forEach(({img, altimg, title, descr, price}) => {
+  //             new MenuCard(img, altimg, title, descr, price, '.menu .container').render();
+  //         });
+  //     }); 
+  // Формирование карточек без использования шаблонизации 
+  // getResources('http://localhost:3000/menu')
   //     .then(data => createCard(data));
   // function createCard(data) {
   //     data.forEach(({img, altimg, title, descr, price}) => {
@@ -3055,7 +3063,8 @@ window.addEventListener('DOMContentLoaded', () => {
   //         document.querySelector('.menu .container').append(element);
   //     });
   // }
-  // Формы
+
+  /* Формы */
 
   const forms = document.querySelectorAll('form');
   const message = {
