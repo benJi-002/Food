@@ -32,11 +32,16 @@ gulp.task("build-js", () => {
                             use: {
                               loader: 'babel-loader',
                               options: {
-                                presets: [['@babel/preset-env', {
-                                    debug: true,
-                                    corejs: 3,
-                                    useBuiltIns: "usage"
-                                }]]
+                                presets: [
+                                  ['@babel/preset-env', {
+                                      debug: true,
+                                      corejs: 3,
+                                      useBuiltIns: "usage"
+                                  
+                                    },
+                                  ], 
+                                ],
+                                sourceType: "unambiguous"
                               }
                             }
                           }
