@@ -1,3 +1,5 @@
+import { getResources } from "../services/services";
+
 function cards() {
 
     // Использую классы для карточек
@@ -42,17 +44,6 @@ function cards() {
         }
     }
 
-    const getResources = async (url) => { //async говороит функции, что внутри будет асинхронный код
-        const res = await fetch(url); // await - переменная res будет ожидать выполнения промиса
-
-        // обработка ошибок от fetch
-        if (!res.ok) {
-            throw new Error(`Could not fetch ${url}, status: ${res.status}`); //конструируем новую ошибку
-        }
-
-        return await res.json();
-    };
-
     getResources('http://localhost:3000/menu')
         .then(data => {
             data.forEach(({img, altimg, title, descr, price}) => {
@@ -60,6 +51,8 @@ function cards() {
             });
         });
 
+
+        
     // Формирование карточек при помощи сторонней библиотеки axios
 
     // axios.get('http://localhost:3000/menu')
@@ -100,4 +93,4 @@ function cards() {
     // }
 }
 
-module.exports = cards;
+export default cards;
